@@ -2,7 +2,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
 
@@ -14,20 +13,21 @@ public class Client {
         Socket socket = new Socket("127.0.0.1", 8000);
         PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
         BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        while(true)
-        {
-            int userInput=displayMenu();    // displays menu and takes care of the invalid input
-            writer.print(userInput);        //if the inp=7, we will tell the server to stop!
-            if(userInput==7)
+        Scanner scan = new Scanner(reader);
+        while (true) {
+            int userInput = displayMenu();    // displays menu and takes care of the invalid input
+            writer.println(Integer.toString(userInput));
+            System.out.println(userInput);//if the inp=7, we will tell the server to stop!
+            if (userInput == 7)
                 break;
-            Scanner scan= new Scanner(reader);
-            while(scan.hasNext())
-            {
-                System.out.println(scan.next());
+            while (scan.hasNextLine()) {
+                System.out.println(scan.nextLine());        //doesn't exit the loop nor it print's
+                System.out.println("k");
             }
         }
 
     }
+
     public static int displayMenu() {
         Scanner usrInput = new Scanner(System.in);
         System.out.println("Enter a choice(Number) from the following menu:");

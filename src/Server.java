@@ -13,42 +13,51 @@ public class Server {
         ServerSocket serverSocket = new ServerSocket(8000);
         Socket clientSocket = serverSocket.accept();
         BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-        PrintWriter printOnClient = new PrintWriter(clientSocket.getOutputStream());
+        PrintWriter printOnClient = new PrintWriter(clientSocket.getOutputStream(), true);
         Scanner scanner = new Scanner(reader);
+        String realCommand = "";
+        while (true) {
+            System.out.println("running/ Waiting");
+            String command = scanner.nextLine();
+            System.out.println(command);
 
-        String command = scanner.next();
-        String realCommand="";
-        int c = Integer.parseInt(command);
-        switch (c){
-            case 1:
-                realCommand="date";
+
+            int c = Integer.parseInt(command);
+            switch (c) {
+                case 1:
+                    realCommand = "git --version"; // Change it to "date" on Linux
+                    break;
+                case 2:
+                    realCommand = "uptime";
+                    break;
+                case 3:
+                    realCommand = "free";
+                    break;
+                case 4:
+                    realCommand = "netstat";
+                    break;
+                case 5:
+                    realCommand = "who";
+                    break;
+                case 6:
+                    realCommand = "top";
+                    break;
+                default:
+                    realCommand = "quit";
+            }
+            if (!realCommand.equals("quit")) {
+
+                Process process = Runtime.getRuntime().exec(realCommand);
+                BufferedReader commandReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                Scanner commandScanner = new Scanner(commandReader);
+
+                while (commandScanner.hasNext()) {
+                    printOnClient.println(commandScanner.next());
+//                System.out.println(commandScanner.next());
+                }
+            } else {
                 break;
-            case 2:
-                realCommand="uptime";
-                break;
-            case 3:
-                realCommand="free";
-                break;
-            case 4:
-                realCommand="netstat";
-                break;
-            case 5:
-                realCommand="who";
-                break;
-            case 6:
-                realCommand="top";
-                        break;
-            default:
-                realCommand="quit";
-        }
-        if (!realCommand.equals("quit")) {
-            Process process = Runtime.getRuntime().exec(realCommand);
-            BufferedReader commandReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            Scanner commandScanner = new Scanner(commandReader);
-            while (commandScanner.hasNext()) {
-                printOnClient.write(commandScanner.next());
             }
         }
-
     }
 }
