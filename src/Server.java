@@ -51,10 +51,11 @@ public class Server {
                 BufferedReader commandReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
                 Scanner commandScanner = new Scanner(commandReader);
 
-                while (commandScanner.hasNext()) {
-                    printOnClient.println(commandScanner.next());
-//                System.out.println(commandScanner.next());
+                StringBuilder response = new StringBuilder();
+                while (commandScanner.hasNextLine()) {
+                    response.append(commandScanner.nextLine());
                 }
+                printOnClient.println(response);
             } else {
                 break;
             }

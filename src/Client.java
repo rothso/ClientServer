@@ -20,10 +20,7 @@ public class Client {
             System.out.println(userInput);//if the inp=7, we will tell the server to stop!
             if (userInput == 7)
                 break;
-            while (scan.hasNextLine()) {
-                System.out.println(scan.nextLine());        //doesn't exit the loop nor it print's
-                System.out.println("k");
-            }
+            System.out.println(scan.nextLine());
         }
 
     }
