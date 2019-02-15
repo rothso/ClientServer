@@ -14,19 +14,24 @@ public class Client {
         PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
         BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         Scanner scan = new Scanner(reader);
-        while (true) {
-            int userInput = displayMenu();    // displays menu and takes care of the invalid input
-            writer.println(Integer.toString(userInput));
-            System.out.println(userInput);//if the inp=7, we will tell the server to stop!
-            if (userInput == 7)
-                break;
-            System.out.println(scan.nextLine());
-        }
 
+        // Create a scanner specifically for reading the user input
+        Scanner usrInput = new Scanner(System.in);
+        // Display the menu and take care of invalid input
+        int userInput = displayMenu(usrInput);
+
+        // If the input is 7, we will tell the server to stop!
+        while (userInput != 7) {
+            // Send the request (#) to the server
+            writer.println(userInput);
+            // Print the response from the server
+            System.out.println(scan.nextLine());
+            // Ask the user for more input
+            userInput = displayMenu(usrInput);
+        }
     }
 
-    public static int displayMenu() {
-        Scanner usrInput = new Scanner(System.in);
+    private static int displayMenu(Scanner scanner) {
         System.out.println("Enter a choice(Number) from the following menu:");
         System.out.println("1. Host current Date and Time");
         System.out.println("2. Host uptime");
@@ -35,12 +40,12 @@ public class Client {
         System.out.println("5. Host current users");
         System.out.println("6. Host running processes");
         System.out.println("7. Quit");
-        int inp = usrInput.nextInt();
+        int inp = scanner.nextInt();
         if (inp > 0 && inp < 8) {
             return inp;
         } else {
             System.out.println("Invalid option! Try again");
-            return displayMenu();
+            return displayMenu(scanner);
         }
     }
 }
