@@ -55,11 +55,14 @@ public class Server {
                     BufferedReader commandReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
                     Scanner commandScanner = new Scanner(commandReader);
 
-                    StringBuilder response = new StringBuilder();
                     while (commandScanner.hasNextLine()) {
-                        response.append(commandScanner.nextLine());
+                        String line = commandScanner.nextLine();
+                        printOnClient.println(line);
+                        System.out.println(line);
                     }
-                    printOnClient.println(response);
+
+                    // Tell the client to stop listening
+                    printOnClient.println("ACK");
                 } else {
                     break;
                 }

@@ -24,8 +24,13 @@ public class Client {
         while (userInput != 7) {
             // Send the request (#) to the server
             writer.println(userInput);
+
             // Print the response from the server
-            System.out.println(scan.nextLine());
+            String res;
+            while (!(res = scan.nextLine()).equals("ACK")) {
+                System.out.println(res);
+            }
+
             // Ask the user for more input
             userInput = displayMenu(usrInput);
         }
