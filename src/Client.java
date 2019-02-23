@@ -6,57 +6,44 @@ import java.net.Socket;
 import java.util.Scanner;
 
 public class Client {
-    public static final String SERVER_IP = "192.168.101.128";
+    private final PrintWriter writer;
+    private final Scanner reader;
 
-    public static void main(String[] args) throws IOException {
-        // Listening socket
-        Socket socket = new Socket("127.0.0.1", 8000);
-        PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        Scanner scan = new Scanner(reader);
+    public static class Response {
+        public final String body;
+        public final double time;
 
-        // Create a scanner specifically for reading the user input
-        Scanner usrInput = new Scanner(System.in);
-        // Display the menu and take care of invalid input
-        int userInput = displayMenu(usrInput);
-
-        // If the input is 7, we will tell the server to stop!
-        while (userInput != 7) {
-            long initialTime = System.nanoTime();
-
-            // Send the request (#) to the server
-            writer.println(userInput);
-
-            // Print the response from the server
-            String res;
-            while (!(res = scan.nextLine()).equals("ACK")) {
-                System.out.println(res);
-            }
-
-            // Calculate the response time
-            double responseTime = (double) (System.nanoTime() - initialTime) / 100000000;
-            System.out.printf("Response time: %.3fs\n", responseTime);
-
-            // Ask the user for more input
-            userInput = displayMenu(usrInput);
+        public Response(String body, double time) {
+            this.body = body;
+            this.time = time;
         }
     }
 
-    private static int displayMenu(Scanner scanner) {
-        System.out.println("Enter a choice(Number) from the following menu:");
-        System.out.println("1. Host current Date and Time");
-        System.out.println("2. Host uptime");
-        System.out.println("3. Host memory use");
-        System.out.println("4. Host Netstat");
-        System.out.println("5. Host current users");
-        System.out.println("6. Host running processes");
-        System.out.println("7. Quit");
-        int inp = scanner.nextInt();
-        if (inp > 0 && inp < 8) {
-            return inp;
-        } else {
-            System.out.println("Invalid option! Try again");
-            return displayMenu(scanner);
+    public Client(String address, int port) throws IOException {
+        // Open a connection connection to the server
+        Socket socket = new Socket(address, port);
+        this.writer = new PrintWriter(socket.getOutputStream(), true);
+        this.reader = new Scanner(new BufferedReader(new InputStreamReader(socket.getInputStream())));
+    }
+
+    public Response request(int data) {
+        long initialTime = System.nanoTime();
+
+        // Send the request (#) to the server
+        writer.println(data);
+
+        // Get the response from the server
+        String serverResponse;
+        StringBuilder body = new StringBuilder();
+        while (!(serverResponse = reader.nextLine()).equals("ACK")) {
+            body.append(serverResponse);
         }
+
+        // Calculate the response time
+        double responseTime = (double) (System.nanoTime() - initialTime) / 100000000;
+        System.out.printf("Response time: %.3fs\n", responseTime);
+
+        // Return a tuple of the response body and response time
+        return new Response(body.toString(), responseTime);
     }
 }
