@@ -22,6 +22,8 @@ public class Client {
 
         // If the input is 7, we will tell the server to stop!
         while (userInput != 7) {
+            long initialTime = System.nanoTime();
+
             // Send the request (#) to the server
             writer.println(userInput);
 
@@ -30,6 +32,10 @@ public class Client {
             while (!(res = scan.nextLine()).equals("ACK")) {
                 System.out.println(res);
             }
+
+            // Calculate the response time
+            double responseTime = (double) (System.nanoTime() - initialTime) / 100000000;
+            System.out.printf("Response time: %.3fs\n", responseTime);
 
             // Ask the user for more input
             userInput = displayMenu(usrInput);
