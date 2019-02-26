@@ -7,14 +7,22 @@ class ClientRunner {
         // We will be running client batches with these numbers of clients
         int[] numClients = new int[]{1, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
 
-        // Get the average response time for each batch of clients
+        // Run the light loads
+        System.out.println("Light Load (date)");
         for (int numClient : numClients) {
-            double avgResponse = runClients(numClient);
+            double avgResponse = runClients(numClient, 1);
+            System.out.printf("%3d clients - %.5fs\n", numClient, avgResponse);
+        }
+
+        // Run the heavy loads
+        System.out.println("\nHeavy Load (netstat)");
+        for (int numClient : numClients) {
+            double avgResponse = runClients(numClient, 4);
             System.out.printf("%3d clients - %.5fs\n", numClient, avgResponse);
         }
     }
 
-    public static double runClients(int numClients) {
+    public static double runClients(int numClients, int request) {
         double[] responseTimes = new double[numClients];
         Thread[] threads = new Thread[numClients];
 
@@ -23,7 +31,7 @@ class ClientRunner {
             final int n = i;
             threads[i] = new Thread(() -> {
                 try (Client client = new Client("127.0.0.1", 8000)) {
-                    Client.Response res = client.request(1);
+                    Client.Response res = client.request(request);
                     responseTimes[n] = res.time;
                 } catch (IOException e) {
                     e.printStackTrace();
