@@ -1,7 +1,7 @@
 import java.io.IOException;
 import java.util.Scanner;
 
-public class TestRunner {
+public class InteractiveRunner {
     public static final String SERVER_IP = "192.168.101.128";
 
     public static void main(String[] args) throws IOException {
