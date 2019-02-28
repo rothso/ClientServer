@@ -33,7 +33,7 @@ public class Client implements Closeable {
         String serverResponse;
         StringBuilder body = new StringBuilder();
         while (!(serverResponse = reader.nextLine()).equals("ACK")) {
-            body.append(serverResponse);
+            body.append(serverResponse + "\n");
         }
 
         // Calculate the response time

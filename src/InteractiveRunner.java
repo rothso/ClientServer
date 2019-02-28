@@ -5,7 +5,7 @@ public class InteractiveRunner {
     public static final String SERVER_IP = "192.168.101.128";
 
     public static void main(String[] args) throws IOException {
-        Client client = new Client("127.0.0.1", 8000);
+        Client client = new Client(SERVER_IP, 8000);
 
         // Create a scanner specifically for reading the user input
         Scanner usrInput = new Scanner(System.in);

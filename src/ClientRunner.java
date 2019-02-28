@@ -30,7 +30,7 @@ class ClientRunner {
         for (int i = 0; i < numClients; i++) {
             final int n = i;
             threads[i] = new Thread(() -> {
-                try (Client client = new Client("127.0.0.1", 8000)) {
+                try (Client client = new Client("192.168.101.128", 8000)) {
                     Client.Response res = client.request(request);
                     responseTimes[n] = res.time;
                 } catch (IOException e) {
